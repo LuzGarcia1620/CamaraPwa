@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <title>Camara pwa</title>
+</head>
+<body>
+    <div>
+        <button type="button" id="openCamera">Abrir camara</button>
+
+        <fieldset id="cameraContainer" style="display: none;">
+            <video id="video" autoplay style="width: 320; height: 240;"></video>
+            <button type="button" id="takePhoto">Tomar</button>
+        </fieldset>
+
+        <canvas id="canvas" style="width: 320; height: 240;"></canvas>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
