@@ -32,14 +32,19 @@ async function openCamera() {
     }
 }
 
-// Tomar foto
 function takePhoto() {
     if (!stream) {
         alert('Primero debes abrir la cámara');
         return;
     }
 
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // Ajustar el canvas al tamaño real del video
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    // Dibujar respetando las proporciones originales
+    ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+
     const imageDataURL = canvas.toDataURL('image/png');
     console.log('Foto tomada:', imageDataURL.substring(0, 50) + '...');
 
