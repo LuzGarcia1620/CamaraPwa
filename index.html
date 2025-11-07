@@ -1,23 +1,208 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="manifest.json">
-    <title>Camara pwa</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <title>PWA Cámara</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Poppins", "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #f8f4ff, #fffaff);
+      color: #2c2c2c;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 24px;
+      text-align: center;
+      color: #5b2a86; /* Lila oscuro */
+      font-weight: 700;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .camera-section, .gallery-section {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(91, 42, 134, 0.2);
+      margin-bottom: 28px;
+    }
+
+    .camera-section-title, .gallery-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #7d57a0;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .controls, .camera-actions {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .controls button, .camera-actions button, .gallery-controls button {
+      padding: 12px 16px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      color: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    /* Colores base */
+    #openCamera { background-color: #b388eb; }
+    #takePhoto { background-color: #a66bff; }
+    #toggleCamera2 { background-color: #8a56ac; }
+    #closeCamera { background-color: #f76b8a; }
+    #clearGallery { background-color: #ff9ed3; color: #2c2c2c; }
+
+    /* Hover */
+    @media (hover: hover) {
+      button:hover:not(:disabled) {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    fieldset {
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    video {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      background-color: black;
+      margin-bottom: 12px;
+      object-fit: cover;
+    }
+
+    #canvas {
+      display: none;
+    }
+
+    .gallery-controls {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 14px;
+    }
+
+    .gallery-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 12px;
+      border: 2px solid #e3d8f9;
+      border-radius: 10px;
+      background-color: #fdfbff;
+      scroll-behavior: smooth;
+    }
+
+    .gallery-scroll::-webkit-scrollbar {
+      height: 6px;
+    }
+    .gallery-scroll::-webkit-scrollbar-thumb {
+      background: #c2a4e2;
+      border-radius: 4px;
+    }
+
+    .gallery-item {
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .gallery-item img {
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 3px solid #b388eb;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .gallery-item img:hover {
+      transform: scale(1.08);
+      border-color: #a66bff;
+    }
+
+    .empty-gallery {
+      text-align: center;
+      color: #9b89b3;
+      font-size: 14px;
+      padding: 24px;
+      background: #f8f5ff;
+      border-radius: 10px;
+    }
+
+    @media (min-width: 600px) {
+      .camera-section, .gallery-section {
+        padding: 28px;
+      }
+      h1 { font-size: 32px; }
+    }
+  </style>
 </head>
 <body>
-    <div>
-        <button type="button" id="openCamera">Abrir camara</button>
+  <h1>📸 Mi Cámara con PWA</h1>
 
-        <fieldset id="cameraContainer" style="display: none;">
-            <video id="video" autoplay style="width: 320; height: 240;"></video>
-            <button type="button" id="takePhoto">Tomar</button>
-        </fieldset>
-
-        <canvas id="canvas" style="width: 320; height: 240;"></canvas>
+  <div class="camera-section">
+    <div class="camera-section-title">Controles de Cámara</div>
+    <div class="controls">
+      <button type="button" id="openCamera">Abrir Cámara</button>
     </div>
-    
-    <script src="app.js"></script>
+
+    <fieldset id="cameraContainer" style="display: none;">
+      <video id="video" autoplay playsinline width="320" height="240"></video>
+      <div class="camera-actions">
+        <button type="button" id="takePhoto">Tomar Foto</button>
+        <button type="button" id="toggleCamera2">Cambiar Cámara</button>
+        <button type="button" id="closeCamera">Cerrar Cámara</button>
+      </div>
+    </fieldset>
+  </div>
+
+  <!-- Canvas oculto -->
+  <canvas id="canvas" width="320" height="240"></canvas>
+
+  <div class="gallery-section">
+    <div class="gallery-title">Galería de Fotos</div>
+    <div class="gallery-controls">
+      <button type="button" id="clearGallery">Limpiar Galería</button>
+    </div>
+    <div class="gallery-scroll" id="galleryScroll">
+      <div class="empty-gallery">No hay fotos aún 💜</div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>

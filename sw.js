@@ -1,6 +1,6 @@
-// Service Worker para PWA
-const CACHE_NAME = 'camara-pwa-v1'; // Nombre/versión del caché
-const urlsToCache = [ // Lista de archivos a guardar en caché
+
+const CACHE_NAME = 'camara-pwa-v1'; 
+const urlsToCache = [ 
     '/',
     '/index.html',
     '/app.js',
